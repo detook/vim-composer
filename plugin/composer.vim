@@ -43,6 +43,11 @@ function! s:ComposerInstall()
     call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
 endfunction
 
+function! s:ComposerUpdate()
+    let cmd = g:Composer_defaults.' update' 
+    call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
+endfunction
+
 " Open output in the buffer
 function s:ComposerOpenBuffer(output)
     " is there phpunit_buffer?
@@ -79,6 +84,11 @@ endif
 " php composer.phar install
 if !exists(":ComposerInstall")
     command -bang -nargs=? ComposerInstall :call s:ComposerInstall()
+endif
+
+" php composer.phar update
+if !exists(":ComposerUpdate")
+    command -bang -nargs=? ComposerUpdate :call s:ComposerUpdate()
 endif
 
 " Restore line-continuation

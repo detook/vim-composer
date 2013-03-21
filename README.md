@@ -8,3 +8,5 @@ Usage
 for example.
 
 `:ComposerInstall` is a shortcut for `php composer.phar install`
+
+`:ComposerUpdate` to run `php composer.phar update`
