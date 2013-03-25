@@ -19,6 +19,14 @@ endif
 
 let s:composer_phar = 'composer.phar'
 
+" is composer.phar installed or not
+let s:composer_installed = 0
+
+augroup composer
+  autocmd!
+  autocmd BufNewFile,BufReadPost * call s:Detect(expand('<amatch>:p'))
+augroup END
+
 " Defaults options for composer
 if !exists("g:Composer_defaults")
     " Gvim does not process ansi output
@@ -29,11 +37,25 @@ if !exists("g:Composer_defaults")
     endif
 endif
 
+function! s:Detect(path)
+    let folderpath = fnamemodify(a:path, ':p:h')
+    if filereadable(folderpath.'/'.s:composer_phar)
+        let s:composer_installed = 1
+    else
+        let s:composer_installed = 0
+    endif
+endfunction
+
 function! s:Execute(cmd)
     execute a:cmd
 endfunction
 
 function! s:ComposerRun(args)
+    call s:Detect(expand('<amatch>:p'))
+    if s:composer_installed == 0
+        echo "composer not installed"
+        return 1
+    endif
     let cmd = g:Composer_defaults." ".a:args
     call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
 endfunction
