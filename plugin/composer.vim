@@ -61,13 +61,11 @@ function! s:ComposerRun(args)
 endfunction
 
 function! s:ComposerInstall()
-    let cmd = g:Composer_defaults.' install' 
-    call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
+    call s:ComposerRun('install')
 endfunction
 
 function! s:ComposerUpdate()
-    let cmd = g:Composer_defaults.' update' 
-    call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
+    call s:ComposerRun('update')
 endfunction
 
 " Open output in the buffer
