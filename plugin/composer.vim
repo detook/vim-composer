@@ -1,6 +1,6 @@
 " Composer plugin for VIM
 " Maintainer: Denis Tukalenko <detook@gmail.com>
-" Version:    0.1
+" Version:    0.2
 
 " Line-continuation
 let s:save_cpo = &cpo
@@ -64,15 +64,8 @@ function! s:Detect(path)
         let ofn = fn
         let fn = fnamemodify(ofn,':h')
     endwhile
-    "let folderpath = fnamemodify(a:path, ':p:h')
-    "if filereadable(folderpath.'/'.s:composer_phar)
-     "   let s:composer_installed = 1
-        
-        " composer phar exists so we can define commands
-     "   call s:define_commands()
-    "else
-        let s:composer_installed = 0
-    "endif
+    
+    let s:composer_installed = 0
 endfunction
 
 function! s:Execute(cmd)
