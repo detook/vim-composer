@@ -21,6 +21,7 @@ let s:composer_phar = 'composer.phar'
 
 " is composer.phar installed or not
 let s:composer_installed = 0
+let b:composer_dir = ""
 
 augroup composer
     autocmd!
@@ -50,13 +51,13 @@ if !exists("g:Composer_defaults")
 endif
 
 function! s:Detect(path)
-"    let path = s:shellslash(a:path)
     let fn = fnamemodify(a:path,':s?[\/]$??')
     let ofn = ""
     let nfn = fn
     while fn != ofn
         if filereadable(fn . '/'.s:composer_phar)
             let s:composer_installed = 1
+            let b:composer_dir = fn . '/'
 
             call s:define_commands()
             return ""
@@ -73,7 +74,11 @@ function! s:Execute(cmd)
 endfunction
 
 function! s:ComposerRun(args)
-    let cmd = g:Composer_defaults." ".a:args
+    if (s:composer_installed == 1)
+        let cmd = g:Composer_defaults." --working-dir=\"".b:composer_dir."\" ".a:args
+    else
+        let cmd = g:Composer_defaults." ".a:args
+    endif    
     call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
 endfunction
 
