@@ -90,6 +90,18 @@ function! s:ComposerUpdate()
     call s:ComposerRun('update')
 endfunction
 
+function! s:ComposerOpenJson()
+    if (s:composer_installed == 0)
+        echo "Seems composer is not installed"
+        return 0
+    endif
+    
+    let composer_json_path = b:composer_dir."composer.json"
+    if filereadable(composer_json_path)
+        execute "e ".fnameescape(composer_json_path)
+    endif
+endfunction
+
 " Open output in the buffer
 function s:ComposerOpenBuffer(output)
     if exists('g:Composer_buffer') && bufexists(g:Composer_buffer)
@@ -129,6 +141,11 @@ endif
 " php composer.phar update
 if !exists(":ComposerUpdate")
     call s:command("-bang -nargs=? ComposerUpdate :call s:ComposerUpdate()")
+endif
+
+" open composer.json in new buffer
+if !exists(":ComposerOpenJson")
+    call s:command("-bang -nargs=? ComposerOpenJson :call s:ComposerOpenJson()")
 endif
 
 " Restore line-continuation
