@@ -73,6 +73,13 @@ function! s:Execute(cmd)
     execute a:cmd
 endfunction
 
+" open path in a new buffer
+function! s:openFile(path)
+    if filereadable(a:path)        
+        execute "e ".fnameescape(a:path)
+    endif
+endfunction
+
 function! s:ComposerRun(args)
     if (s:composer_installed == 1)
         let cmd = g:Composer_defaults." --working-dir=\"".b:composer_dir."\" ".a:args
@@ -91,41 +98,13 @@ function! s:ComposerUpdate()
 endfunction
 
 function! s:ComposerOpenJson()
-    if (s:composer_installed == 0)
-        echo "Seems composer is not installed"
-        return 0
-    endif
-    
     let composer_json_path = b:composer_dir."composer.json"
-    if filereadable(composer_json_path)
-        execute "e ".fnameescape(composer_json_path)
-    endif
+    call s:openFile(composer_json_path)
 endfunction
 
-" Open output in the buffer
-function s:ComposerOpenBuffer(output)
-    if exists('g:Composer_buffer') && bufexists(g:Composer_buffer)
-        let composer_win = bufwinnr(g:Composer_buffer)
-        " is buffer visible?
-        if composer_win > 0
-            " switch to visible composer buffer
-            execute composer_win . "wincmd w"
-        else
-            " split current buffer, with Composer_buffer
-            execute "sb ".g:Composer_buffer
-        endif
-        " Composer_buffer is opened, clear content
-        setlocal modifiable
-        silent %d
-    else
-        " there is no composer_buffer create new one
-        new
-        let g:Composer_buffer = bufnr('%')
-    endif
-
-    setlocal buftype=nofile modifiable bufhidden=hide
-    silent put=a:output
-    setlocal nomodifiable
+function! s:ComposerOpenLock()
+    let composer_lock_path = b:composer_dir."composer.lock"
+    call s:openFile(composer_lock_path)
 endfunction
 
 " php composer.phar
@@ -146,6 +125,11 @@ endif
 " open composer.json in new buffer
 if !exists(":ComposerOpenJson")
     call s:command("-bang -nargs=? ComposerOpenJson :call s:ComposerOpenJson()")
+endif
+
+" open composer.lock in new buffer
+if !exists(":ComposerOpenLock")
+    call s:command("-bang -nargs=? ComposerOpenLock :call s:ComposerOpenLock()")
 endif
 
 " Restore line-continuation
