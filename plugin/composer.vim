@@ -21,6 +21,7 @@ let s:composer_phar = 'composer.phar'
 
 " is composer.phar installed or not
 let s:composer_installed = 0
+let b:composer_dir = ""
 
 augroup composer
     autocmd!
@@ -50,13 +51,13 @@ if !exists("g:Composer_defaults")
 endif
 
 function! s:Detect(path)
-"    let path = s:shellslash(a:path)
     let fn = fnamemodify(a:path,':s?[\/]$??')
     let ofn = ""
     let nfn = fn
     while fn != ofn
         if filereadable(fn . '/'.s:composer_phar)
             let s:composer_installed = 1
+            let b:composer_dir = fn . '/'
 
             call s:define_commands()
             return ""
@@ -72,8 +73,19 @@ function! s:Execute(cmd)
     execute a:cmd
 endfunction
 
+" open path in a new buffer
+function! s:openFile(path)
+    if filereadable(a:path)        
+        execute "e ".fnameescape(a:path)
+    endif
+endfunction
+
 function! s:ComposerRun(args)
-    let cmd = g:Composer_defaults." ".a:args
+    if (s:composer_installed == 1)
+        let cmd = g:Composer_defaults." --working-dir=\"".b:composer_dir."\" ".a:args
+    else
+        let cmd = g:Composer_defaults." ".a:args
+    endif    
     call s:Execute('!'.g:php_bin.' '.s:composer_phar.' '.cmd)
 endfunction
 
@@ -85,30 +97,14 @@ function! s:ComposerUpdate()
     call s:ComposerRun('update')
 endfunction
 
-" Open output in the buffer
-function s:ComposerOpenBuffer(output)
-    if exists('g:Composer_buffer') && bufexists(g:Composer_buffer)
-        let composer_win = bufwinnr(g:Composer_buffer)
-        " is buffer visible?
-        if composer_win > 0
-            " switch to visible composer buffer
-            execute composer_win . "wincmd w"
-        else
-            " split current buffer, with Composer_buffer
-            execute "sb ".g:Composer_buffer
-        endif
-        " Composer_buffer is opened, clear content
-        setlocal modifiable
-        silent %d
-    else
-        " there is no composer_buffer create new one
-        new
-        let g:Composer_buffer = bufnr('%')
-    endif
+function! s:ComposerOpenJson()
+    let composer_json_path = b:composer_dir."composer.json"
+    call s:openFile(composer_json_path)
+endfunction
 
-    setlocal buftype=nofile modifiable bufhidden=hide
-    silent put=a:output
-    setlocal nomodifiable
+function! s:ComposerOpenLock()
+    let composer_lock_path = b:composer_dir."composer.lock"
+    call s:openFile(composer_lock_path)
 endfunction
 
 " php composer.phar
@@ -124,6 +120,16 @@ endif
 " php composer.phar update
 if !exists(":ComposerUpdate")
     call s:command("-bang -nargs=? ComposerUpdate :call s:ComposerUpdate()")
+endif
+
+" open composer.json in new buffer
+if !exists(":ComposerOpenJson")
+    call s:command("-bang -nargs=? ComposerOpenJson :call s:ComposerOpenJson()")
+endif
+
+" open composer.lock in new buffer
+if !exists(":ComposerOpenLock")
+    call s:command("-bang -nargs=? ComposerOpenLock :call s:ComposerOpenLock()")
 endif
 
 " Restore line-continuation
