@@ -77,6 +77,8 @@ endfunction
 function! s:openFile(path)
     if filereadable(a:path)        
         execute "e ".fnameescape(a:path)
+    else
+        echo a:path. " is not readable."
     endif
 endfunction
 
