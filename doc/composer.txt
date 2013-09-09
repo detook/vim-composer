@@ -1,0 +1,38 @@
+*composer.txt*  Composer plugin for Vim
+
+Author:     Denis Tukalenko <https://github.com/detook/>
+License:    Beerware
+
+This plugin is tested only under Ubuntu (CLI and GVim).
+
+INTRODUCTION                                    *composer*
+
+Composer (http://getcomposer.org/) is a Dependency Manager for PHP.
+This vim plugin is a wrapper for 'php composer.phar' command.
+
+COMMANDS                                        *composer-commands*
+
+These commands are available only if composer.phar is installed in the
+project directory.
+
+                                                *composer-:Composer*
+:Composer [args]        The same as :!php composer.phar [args].
+
+                                                *composer-:ComposerInstall*
+:ComposerInstall        Shortcut for :!php composer.phar install.
+                                                
+                                                *composer-:ComposerUpdate*
+:ComposerUpdate         Shortcut for :!php composer.phar update.
+
+                                                *composer-:ComposerOpenJson*
+:ComposerOpenJson       Locates composer.json file and opens it in a new buffer.
+
+                                                *composer-:ComposerOpenLock*
+:ComposerOpenLock       Locates composer.lock file and opens it in a new buffer.
+
+ABOUT                                           *composer-about*
+
+Grab the latest version or report a bug on GitHub:
+
+https://github.com/detook/vim-composer
+
