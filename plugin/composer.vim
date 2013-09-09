@@ -1,6 +1,6 @@
 " Composer plugin for VIM
 " Maintainer: Denis Tukalenko <detook@gmail.com>
-" Version:    0.2
+" Version:    0.3
 
 " Line-continuation
 let s:save_cpo = &cpo
