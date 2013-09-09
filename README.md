@@ -4,7 +4,8 @@ Composer plugin for Vim
 Usage
 -----
 
-`:Composer` is a wrapper for `php composer.phar`. You can call `:Composer about`
+[Composer](http://getcomposer.org/) is a Dependency Manager for PHP.
+This vim plugin is a wrapper for `php composer.phar` command. You can call `:Composer about`
 for example.
 
 `:ComposerInstall` is a shortcut for `php composer.phar install`.
